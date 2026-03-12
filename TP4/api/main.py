@@ -71,7 +71,7 @@ app = FastAPI(title="Pneumonia Detection API")
 ROOT        = Path(__file__).resolve().parent.parent
 TRAIN_DIR   = ROOT / "data" / "train"
 VAL_DIR     = ROOT / "data" / "val"
-TEST_DIR    = ROOT / "data" / "test_for_students"
+TEST_DIR    = ROOT / "submission" / "test_for_students"
 WEIGHTS_DIR = ROOT / "api" / "weights"
 WEIGHTS_DIR.mkdir(exist_ok=True)
 
@@ -129,16 +129,18 @@ def get_transforms(image_size: int, augment: bool = False):
 
     if augment:
         return transforms.Compose([
-            # resize to image_size
-            # random augmentations
-            # ToTensor
-            # normalize
+            transforms.Resize((image_size, image_size)),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomRotation(degrees=10),
+            transforms.ColorJitter(brightness=0.1, contrast=0.1),
+            transforms.ToTensor(),
+            normalize,
         ])
     else:
         return transforms.Compose([
-            # resize to image_size
-            # ToTensor
-            # normalize
+            transforms.Resize((image_size, image_size)),
+            transforms.ToTensor(),
+            normalize,
         ])
 
 
